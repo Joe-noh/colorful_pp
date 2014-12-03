@@ -25,6 +25,8 @@ defmodule ColorfulPP.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    []
+    [
+      {:colorful, "~> 0.5"}
+    ]
   end
 end
