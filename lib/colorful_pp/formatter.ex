@@ -1,5 +1,5 @@
 alias ColorfulPP.Colorizer
-alias ColorfulPP.Formatter
+alias ColorfulPP.Formatter, as: F
 import ColorfulPP.Utils
 
 defprotocol ColorfulPP.Formatter do
@@ -10,45 +10,93 @@ defprotocol ColorfulPP.Formatter do
 end
 
 defimpl ColorfulPP.Formatter, for: Atom do
-  def format(obj, opts), do: IO.puts Colorizer.atom(inspect obj)
+  def format(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.atom(inspect obj)
+  end
+
+  def format(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
 end
 
 defimpl ColorfulPP.Formatter, for: BitString do
-  def format(obj, %Formatter{indent: n, color: true}) do
+  def format(obj, %F{indent: n, color: true}) do
     IO.puts indent(n) <> Colorizer.bitstring(inspect obj)
   end
 
-  def format(obj, %Formatter{indent: n, color: false}) do
+  def format(obj, %F{indent: n, color: false}) do
     IO.puts indent(n) <> inspect(obj)
   end
 end
 
 defimpl ColorfulPP.Formatter, for: Integer do
-  def format(obj, opts), do: IO.puts Colorizer.integer(inspect obj)
+  def format(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.integer(inspect obj)
+  end
+
+  def format(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
 end
 
 defimpl ColorfulPP.Formatter, for: Float do
-  def format(obj, opts), do: IO.puts Colorizer.float(inspect obj)
+  def format(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.float(inspect obj)
+  end
+
+  def format(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
 end
 
 defimpl ColorfulPP.Formatter, for: Range do
-  def format(obj, opts), do: IO.puts Colorizer.range(inspect obj)
+  def format(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.range(inspect obj)
+  end
+
+  def format(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
 end
 
 defimpl ColorfulPP.Formatter, for: Regex do
-  def format(obj, opts), do: IO.puts Colorizer.regex(inspect obj)
+  def format(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.regex(inspect obj)
+  end
+
+  def format(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
 end
 
 defimpl ColorfulPP.Formatter, for: Function do
-  def format(obj, opts), do: IO.puts Colorizer.function(inspect obj)
+  def format(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.function(inspect obj)
+  end
+
+  def format(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
 end
 
 defimpl ColorfulPP.Formatter, for: PID do
-  def format(obj, opts), do: IO.puts Colorizer.pid(inspect obj)
+  def format(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.pid(inspect obj)
+  end
+
+  def format(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
 end
 
 defimpl ColorfulPP.Formatter, for: Reference do
-  def format(obj, opts), do: IO.puts Colorizer.reference(inspect obj)
+  def format(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.reference(inspect obj)
+  end
+
+  def format(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
 end
 
 defimpl ColorfulPP.Formatter, for: Tuple do
@@ -58,10 +106,10 @@ defimpl ColorfulPP.Formatter, for: Tuple do
 end
 
 defimpl ColorfulPP.Formatter, for: List do
-  def format(obj, opts = %Formatter{indent: n}) do
+  def format(obj, opts = %F{indent: n}) do
     IO.puts indent(n) <> "["
     Enum.each obj, fn e ->
-      Formatter.format e, %Formatter{opts | indent: n+2}
+      F.format e, %F{opts | indent: n+2}
     end
     IO.puts indent(n) <> "]"
   end
@@ -92,8 +140,8 @@ defimpl ColorfulPP.Formatter, for: Stream do
 end
 
 defimpl ColorfulPP.Formatter, for: Any do
-  def format(obj, opts) do
-    IO.inspect obj
+  def format(obj, %F{indent: n}) do
+    IO.puts indent(n) <> inspect(obj)
   end
 end
 
