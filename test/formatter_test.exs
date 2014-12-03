@@ -1,7 +1,10 @@
 defmodule FormatterTest do
   use ExUnit.Case
+  import ExUnit.CaptureIO
 
   import ColorfulPP.Formatter
+
+  @no_color %ColorfulPP.Formatter{color: false}
 
   defstruct a: nil, b: nil
 
@@ -23,5 +26,23 @@ defmodule FormatterTest do
     format HashDict.new
     format Stream.map(1..2, &(&1))
     format %__MODULE__{}
+  end
+
+  test "format list" do
+    output = capture_io fn ->
+      format ["a", "b", ["c"]], @no_color
+    end
+
+    expected = """
+    [
+      "a"
+      "b"
+      [
+        "c"
+      ]
+    ]
+    """
+
+    assert output == expected
   end
 end
