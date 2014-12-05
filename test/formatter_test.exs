@@ -1,6 +1,6 @@
 defmodule FormatterTest do
   use ExUnit.Case
-  import ExUnit.CaptureIO
+  import TestHelper
 
   import ColorfulPP.Formatter
 
@@ -28,11 +28,43 @@ defmodule FormatterTest do
     format %__MODULE__{}
   end
 
-  test "format list" do
-    output = capture_io fn ->
-      format ["a", "b", ["c"]], @no_color
-    end
+  test "format atom" do
+    assert capture_formatted(:atom) == ":atom\n"
+  end
 
+  test "format bitstring" do
+    assert capture_formatted("string") == ~s("string"\n)
+  end
+
+  test "format integer" do
+    assert capture_formatted(123) == "123\n"
+  end
+
+  test "format float" do
+    assert capture_formatted(3.14) == "3.14\n"
+  end
+
+  test "format range" do
+    assert capture_formatted(1..5) == "1..5\n"
+  end
+
+  test "format regex" do
+    assert capture_formatted(~r/abc/) == "~r/abc/\n"
+  end
+
+  test "format function" do
+    assert capture_formatted(& &1) =~ ~r/^#Function<.+>\n$/
+  end
+
+  test "format pid" do
+    assert capture_formatted(self) =~ ~r/^#PID<.+>\n$/
+  end
+
+  test "format reference" do
+    assert capture_formatted(make_ref) =~ ~r/^#Reference<.+>\n$/
+  end
+
+  test "format list" do
     expected = """
     [
       "a"
@@ -43,11 +75,10 @@ defmodule FormatterTest do
     ]
     """
 
-    assert output == expected
+    assert expected == capture_formatted(["a", "b", ["c"]])
   end
 
   test "format charlist" do
-    output = capture_io(fn -> format 'abc', @no_color end)
-    assert output == "'abc'\n"
+    assert capture_formatted('abc') == "'abc'\n"
   end
 end
