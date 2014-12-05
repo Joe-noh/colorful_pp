@@ -106,7 +106,23 @@ defimpl ColorfulPP.Formatter, for: Tuple do
 end
 
 defimpl ColorfulPP.Formatter, for: List do
-  def format(obj, opts = %F{indent: n}) do
+  def format(obj, opts) do
+    if inspect(obj) =~ ~r{'.*'} do
+      format_char_list(obj, opts)
+    else
+      format_list(obj, opts)
+    end
+  end
+
+  defp format_char_list(obj, %F{indent: n, color: true}) do
+    IO.puts indent(n) <> Colorizer.char_list(inspect obj)
+  end
+
+  defp format_char_list(obj, %F{indent: n, color: false}) do
+    IO.puts indent(n) <> inspect(obj)
+  end
+
+  defp format_list(obj, opts = %F{indent: n}) do
     IO.puts indent(n) <> "["
     Enum.each obj, fn e ->
       F.format e, %F{opts | indent: n+2}

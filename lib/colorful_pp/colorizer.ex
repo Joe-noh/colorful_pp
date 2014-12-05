@@ -8,4 +8,5 @@ defmodule ColorfulPP.Colorizer do
   def function(str),  do: Colorful.string(str, :blue)
   def pid(str),       do: Colorful.string(str, :yellow)
   def reference(str), do: Colorful.string(str, :cyan)
+  def char_list(str), do: Colorful.string(str, {5, 2, 1})
 end
