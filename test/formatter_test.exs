@@ -45,4 +45,9 @@ defmodule FormatterTest do
 
     assert output == expected
   end
+
+  test "format charlist" do
+    output = capture_io(fn -> format 'abc', @no_color end)
+    assert output == "'abc'\n"
+  end
 end
